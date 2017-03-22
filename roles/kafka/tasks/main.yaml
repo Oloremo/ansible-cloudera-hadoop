@@ -60,7 +60,7 @@
 
 - name: test, create test message
   tags: test
-  shell: echo 'test message' | kafka-console-producer --broker-list {{ ansible_hostname }}:9092 --topic test
+  shell: echo 'test message' | kafka-console-producer --broker-list {{ ansible_fqdn }}:9092 --topic test
   run_once: true
 
 - name: test, read the message

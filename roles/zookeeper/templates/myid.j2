@@ -1,7 +1,7 @@
 {% if groups['zookeepernodes']|count > 1 %}
 {% set index = 1 %}
 {% for item in groups['zookeepernodes'] %}
-{% if ansible_hostname == item %}
+{% if ansible_fqdn == item %}
 {{ index }}
 {% endif %}
 {% set index = index +1 %}

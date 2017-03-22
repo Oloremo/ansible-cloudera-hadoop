@@ -18,7 +18,7 @@
 
 - name: generate known_hosts
   tags: config
-  local_action: shell ssh-keyscan {{ ansible_hostname }} >> {{ inventory_dir }}/workdir/hdfs_known_hosts
+  local_action: shell ssh-keyscan {{ ansible_fqdn }} >> {{ inventory_dir }}/workdir/hdfs_known_hosts
 
 - name: create .ssh dir
   tags: config

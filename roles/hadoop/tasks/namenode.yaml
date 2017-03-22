@@ -44,19 +44,19 @@
 - name: format primary namenode
   tags: init
   command: sudo -Hu hdfs hdfs namenode -format -force
-  when: ansible_hostname == groups['namenodes'][0] and destroy_data
+  when: ansible_fqdn == groups['namenodes'][0] and destroy_data
 
 - name: start primary namenode
   tags: service
   service: name=hadoop-hdfs-namenode state=restarted enabled=yes
-  when: ansible_hostname == groups['namenodes'][0]
+  when: ansible_fqdn == groups['namenodes'][0]
 
 - name: init secondary instance
   tags: init
   command: sudo -Hu hdfs hdfs namenode -bootstrapStandby
-  when: ansible_hostname != groups['namenodes'][0] and destroy_data
+  when: ansible_fqdn != groups['namenodes'][0] and destroy_data
 
 - name: start secondary namenode
   tags: service
   service: name=hadoop-hdfs-namenode state=restarted enabled=yes
-  when: ansible_hostname != groups['namenodes'][0]
+  when: ansible_fqdn != groups['namenodes'][0]

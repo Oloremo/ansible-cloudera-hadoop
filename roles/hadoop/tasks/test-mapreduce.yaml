@@ -1,6 +1,6 @@
 - name: get resource manager ha state
   tags: test
-  command: sudo -Hu yarn yarn rmadmin -getServiceState {{ ansible_hostname }}
+  command: sudo -Hu yarn yarn rmadmin -getServiceState {{ ansible_fqdn }}
   register: ha_state
   when: groups['yarnresourcemanager']|count > 1
 

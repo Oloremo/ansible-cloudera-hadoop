@@ -1,3 +1,11 @@
+- name: edit /etc/hosts
+  tags: config
+  copy: src=hosts dest=/etc/hosts
+
+- name: add cdh5 repo
+  tags: packages
+  copy: src=cdh5.repo dest=/etc/yum.repos.d/cdh5.repo
+
 - name: install packages
   tags: packages
   yum: name={{item}} state=latest

@@ -101,4 +101,4 @@
 
 - name: test hive
   tags: test
-  command: sudo -Hu hdfs beeline -u jdbc:hive2://{{ ansible_hostname }}:10000 -nhdfs -p password -d org.apache.hive.jdbc.HiveDriver -e 'create table ansible_test_table ( id int )  location "/tmp/ansible_test_table"; drop table ansible_test_table;'
+  command: sudo -Hu hdfs beeline -u jdbc:hive2://{{ ansible_fqdn }}:10000 -nhdfs -p password -d org.apache.hive.jdbc.HiveDriver -e 'create table ansible_test_table ( id int )  location "/tmp/ansible_test_table"; drop table ansible_test_table;'

@@ -9,7 +9,7 @@
   yum:  name={{ item }} state=latest
   with_items:
     - hadoop-mapreduce-historyserver
-  when: ansible_hostname == groups['yarnresourcemanager'][0]
+  when: ansible_fqdn == groups['yarnresourcemanager'][0]
 
 - name: install default configurations
   tags: config
@@ -44,4 +44,4 @@
   service: name={{ item }} state=restarted enabled=yes
   with_items:
     - hadoop-mapreduce-historyserver
-  when: ansible_hostname == groups['yarnresourcemanager'][0]
+  when: ansible_fqdn == groups['yarnresourcemanager'][0]

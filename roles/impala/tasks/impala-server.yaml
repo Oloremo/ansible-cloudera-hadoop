@@ -47,7 +47,7 @@
 - name: test impala
   tags: test
   command: impala-shell -u hdfs -d default -q 'create external table ansible_test_table ( id int ) location "/tmp/ansible_test_table"; drop table ansible_test_table;'
-  when: ansible_hostname == groups['datanodes'][0]
+  when: ansible_fqdn == groups['datanodes'][0]
 
 - name: create hdfs dir
   tags: config

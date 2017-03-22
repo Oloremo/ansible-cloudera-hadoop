@@ -1,6 +1,6 @@
 - name: get hdfs ha state
   tags: test
-  command: sudo -Hu hdfs hdfs haadmin -getServiceState {{ ansible_hostname }}
+  command: sudo -Hu hdfs hdfs haadmin -getServiceState {{ ansible_fqdn }}
   register: ha_state
   when: groups['namenodes']|count > 1
 

@@ -9,7 +9,7 @@
   yum: name={{ item }} state=latest
   with_items:
     - spark-history-server
-  when: ansible_hostname == groups['spark'][0]
+  when: ansible_fqdn == groups['spark'][0]
 
 - name: create configuration directory
   file: path=/etc/spark/conf.{{ cluster_name }} state=directory
@@ -48,7 +48,7 @@
   service: name={{ item }} state=restarted enabled=yes
   with_items:
     - spark-history-server
-  when: ansible_hostname == groups['spark'][0]
+  when: ansible_fqdn == groups['spark'][0]
 
 - name: test
   tags: test
