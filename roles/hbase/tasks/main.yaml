@@ -1,3 +1,53 @@
+- name: download HBase
+  tags: packages
+  get_url: url="http://apache-mirror.rbc.ru/pub/apache/hbase/{{ hbase_release }}/hbase-{{ hbase_version }}-bin.tar.gz" dest=/tmp/hbase-{{ hbase_version }}-bin.tar.gz
+  ignore_errors: true
+  register: hbase_download_result
+
+- name: try to get hbase from archive site if original one returns 404
+  tags: packages
+  get_url: url="http://archive.apache.org/dist/hbase/{{ hbase_version }}/hbase-{{ hbase_version }}-bin.tar.gz" dest=/tmp/hbase-{{ hbase_version }}-bin.tar.gz
+  when: hbase_download_result.failed and hbase_download_result.status_code is defined and hbase_download_result.status_code == 404
+
+- name: unpack HBase
+  tags: packages
+  command: bash -c "cd /opt && tar xzf /tmp/hbase-{{ hbase_version }}-bin.tar.gz" creates=/opt/hbase-{{ hbase_version }}
+
+- name: create symlink for hbase
+  tags: packages
+  file: 
+     src: /opt/hbase-{{ hbase_version }}
+     dest: /usr/lib/hbase
+     state: link
+
+- name: check hbase config directory
+  tags: config
+  stat: path=/usr/lib/hbase/conf
+  register: hbase_config_dir
+
+- name: remove the hbase config directory
+  tags: config
+  file: path=/usr/lib/hbase/conf state=absent
+  when: hbase_config_dir.stat.isdir is defined and hbase_config_dir.stat.isdir
+
+- name: add hbase user
+  tags: packages
+  user: name={{ hbase_user }} shell=/usr/sbin/nologin state=present
+
+- name: adjust limits for hbase
+  tags: config
+  copy: src=hbase-limits.conf dest=/etc/security/limits.d/hbase.conf
+
+- name: add hbase executable
+  tags: config
+  copy: src=hbase-bin.conf dest=/usr/bin/hbase mode=0755
+
+- name: create additional hbase directories
+  file: path={{ item }} state=directory owner={{ hbase_user }} group={{ hbase_user }}
+  with_items:
+    - /var/log/hbase
+    - /var/run/hbase
+
 - include: hbase-master.yaml
   when: deploy == "hbase-master"
 

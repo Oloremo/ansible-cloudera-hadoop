@@ -3,6 +3,11 @@
 java_package: java-1.8.0-openjdk-headless.x86_64
 java_home: /usr/lib/jvm/jre-1.8.0-openjdk
 
+# hbase variables
+hbase_release: hbase-1.0.3
+hbase_version: 1.0.3
+hbase_user: hbase
+
 # cluster name will impact the name of alternatives links and hdfs URI in the case of HA
 cluster_name: cluster
 

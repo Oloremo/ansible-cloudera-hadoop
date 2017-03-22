@@ -1,14 +1,22 @@
-- name: install packages
-  tags: packages
-  yum: name={{ item }} state=latest
+- name: add hbase regionserver init script
+  tags: config
+  copy: src=inits/{{ item }} dest=/etc/rc.d/init.d/{{ item }} mode=0755
   with_items:
     - hbase-regionserver
+  when: "ansible_os_family == 'RedHat'"
 
 - name: create configuration directory
-  file: path=/etc/hbase/conf.{{ cluster_name }} state=directory
+  file: path=/etc/hbase/conf.{{ cluster_name }} state=directory recurse=yes
 
 - name: setup alternatives link
   alternatives: name=hbase-conf link=/etc/hbase/conf path=/etc/hbase/conf.{{ cluster_name }}
+
+- name: create symlink for hbase config directory
+  tags: config
+  file:
+     src: /etc/alternatives/hbase-conf
+     dest: /usr/lib/hbase/conf
+     state: link
 
 - name: install template configurations
   tags: config
@@ -33,7 +41,7 @@
   with_items:
     - hbase-regionserver
 
-- name: test
+- name: hbase test
   tags: test
   shell: echo -e "create 'ansible_test_table', 'id'\ndisable 'ansible_test_table'\n drop 'ansible_test_table'" | hbase shell
   run_once: true
