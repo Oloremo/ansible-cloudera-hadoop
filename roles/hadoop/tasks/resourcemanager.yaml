@@ -1,14 +1,16 @@
+- name: Set Hadoop yarn-resourcemanager and mapreduce-historyserver version
+  tags: package
+  set_fact:
+    yarn_resourcemanager_pkg: "{{ 'hadoop-yarn-resourcemanager-' + yarn_resourcemanager_version if yarn_resourcemanager_version else 'hadoop-yarn-resourcemanager' }}"
+    mapreduce_historyserver_pkg: "{{ 'hadoop-mapreduce-historyserver-' + mapreduce_historyserver_version if mapreduce_historyserver_version else 'hadoop-mapreduce-historyserver' }}"
+
 - name: install resource manager package
   tags: package
-  yum:  name={{ item }} state=latest
-  with_items:
-    - hadoop-yarn-resourcemanager
+  yum:  name={{ yarn_resourcemanager_pkg }} state=present
 
 - name: install history server package
   tags: package
-  yum:  name={{ item }} state=latest
-  with_items:
-    - hadoop-mapreduce-historyserver
+  yum:  name={{ mapreduce_historyserver_pkg }} state=present
   when: ansible_fqdn == groups['yarnresourcemanager'][0]
 
 - name: install default configurations
@@ -20,7 +22,9 @@
 
 - name: configure hdfs directories
   tags: config
-  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  command: hdfs dfs {{ item }}
+  become: true
+  become_user: hdfs
   with_items:
     - -mkdir -p /tmp
     - -chmod 1777 /tmp

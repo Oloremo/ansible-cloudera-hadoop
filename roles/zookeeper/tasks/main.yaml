@@ -1,6 +1,6 @@
 - name: install zookeeper-server
   tags: package
-  yum: name=zookeeper-server state=latest
+  yum: name=zookeeper-server state=present
 
 - name: create configuration directory
   tags: config
@@ -27,14 +27,14 @@
   with_items:
     - zookeeper
 
-- name: ensure data dir
-  tags: config
-  file: path={{ zookeeper_data_dir }} state=directory owner=zookeeper group=zookeeper
-
 - name: clean zookeeper data directory
   tags: init
-  shell: rm -rf {{ zookeeper_data_dir }}/*
+  file: dest={{ zookeeper_data_dir }} state=absent
   when: destroy_data
+
+- name: create zookeeper data directory
+  tags: config
+  file: path={{ zookeeper_data_dir }} state=directory owner=zookeeper group=zookeeper
 
 - name: init zookeeper directory
   tags: init

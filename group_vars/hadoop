@@ -1,3 +1,13 @@
+# versions
+hadoop_version: ""
+hdfs_datanode_version: ""
+hdfs_journalnode_version: ""
+hdfs_namenode_version: ""
+hdfs_zkfc_version: ""
+mapreduce_historyserver_version: ""
+yarn_nodemanager_version: ""
+yarn_resourcemanager_version: ""
+
 # service heap configuration, MB
 namenode_heapsize: 2048
 datanode_heapsize: 2048

@@ -1,8 +1,11 @@
+- name: Set Hadoop version
+  tags: package
+  set_fact:
+    hadoop_pkg: "{{ 'hadoop-' + hadoop_version if hadoop_version else 'hadoop' }}"
+
 - name: install packages
   tags: packages
-  yum: name={{ item }} state=latest
-  with_items:
-    - hadoop
+  yum: name={{ hadoop_pkg }} state=present
 
 - name: create configuration directory
   tags: config

@@ -1,6 +1,8 @@
 - name: get hdfs ha state
   tags: test
-  command: sudo -Hu hdfs hdfs haadmin -getServiceState {{ ansible_fqdn }}
+  command: hdfs haadmin -getServiceState {{ ansible_fqdn }}
+  become: true
+  become_user: hdfs
   register: ha_state
   when: groups['namenodes']|count > 1
 
@@ -11,7 +13,9 @@
 
 - name: test hdfs
   tags: test
-  command: sudo -Hu hdfs hdfs dfs {{ item }} /ansible_hdfs_test
+  command: hdfs dfs {{ item }} /ansible_hdfs_test
+  become: true
+  become_user: hdfs
   with_items:
     - -touchz
     - -rm

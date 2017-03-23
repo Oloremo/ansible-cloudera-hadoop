@@ -1,6 +1,8 @@
 - name: get resource manager ha state
   tags: test
-  command: sudo -Hu yarn yarn rmadmin -getServiceState {{ ansible_fqdn }}
+  command: yarn rmadmin -getServiceState {{ ansible_fqdn }}
+  become: true
+  become_user: yarn
   register: ha_state
   when: groups['yarnresourcemanager']|count > 1
 
@@ -11,7 +13,9 @@
 
 - name: test mapreduce
   tags: test
-  command: sudo -Hu hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 1 1
+  command: hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 1 1
+  become: true
+  become_user: hdfs
   run_once: true
 
 - name: start services

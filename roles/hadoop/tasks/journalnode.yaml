@@ -1,10 +1,15 @@
+- name: Set Hadoop hdfs-journalnode version
+  tags: package
+  set_fact:
+    hdfs_journalnode_pkg: "{{ 'hadoop-hdfs-journalnode-' + hdfs_journalnode_version if hdfs_datanode_version else 'hadoop-hdfs-journalnode' }}"
+
 - name: install packages
   tags: package
-  yum:  name=hadoop-hdfs-journalnode state=latest
+  yum:  name={{ hdfs_journalnode_pkg }} state=present
 
 - name: destroy data
   tags: init
-  command: rm -rf {{ dfs_journalnode_edits_dir }}
+  file: dest={{ dfs_journalnode_edits_dir }} state=absent
   when: destroy_data
 
 - name: create journal node directories

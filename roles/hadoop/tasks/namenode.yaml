@@ -1,6 +1,12 @@
+- name: Set Hadoop hdfs-namenode and hdfs-zkfc version
+  tags: package
+  set_fact:
+    hdfs_namenode_pkg: "{{ 'hadoop-hdfs-namenode-' + hdfs_namenode_version if hdfs_namenode_version else 'hadoop-hdfs-namenode' }}"
+    hdfs_zkfc_pkg: "{{ 'hadoop-hdfs-zkfc-' + hdfs_zkfc_version if hdfs_zkfc_version else 'hadoop-hdfs-zkfc' }}"
+
 - name: install namenode package
   tags: package
-  yum:  name=hadoop-hdfs-namenode state=latest
+  yum:  name={{ hdfs_namenode_pkg }} state=present
 
 - name: install namenode default configurations
   template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
@@ -9,7 +15,7 @@
 
 - name: install zkfc package
   tags: package
-  yum:  name=hadoop-hdfs-zkfc state=latest
+  yum:  name={{ hdfs_zkfc_pkg }} state=present
   when:  groups['namenodes']|count > 1
 
 - name: install zkfc default configurations
@@ -21,7 +27,9 @@
 
 - name: initialize zookeeper
   tags: init
-  command: sudo -Hu hdfs hdfs zkfc -formatZK -force
+  command: hdfs zkfc -formatZK -force
+  become: true
+  become_user: hdfs
   when:  groups['namenodes']|count > 1
   run_once: true
 
@@ -43,7 +51,9 @@
 
 - name: format primary namenode
   tags: init
-  command: sudo -Hu hdfs hdfs namenode -format -force
+  command: hdfs namenode -format -force
+  become: true
+  become_user: hdfs
   when: ansible_fqdn == groups['namenodes'][0] and destroy_data
 
 - name: start primary namenode
@@ -53,7 +63,9 @@
 
 - name: init secondary instance
   tags: init
-  command: sudo -Hu hdfs hdfs namenode -bootstrapStandby
+  command: hdfs namenode -bootstrapStandby
+  become: true
+  become_user: hdfs
   when: ansible_fqdn != groups['namenodes'][0] and destroy_data
 
 - name: start secondary namenode

@@ -1,9 +1,15 @@
+- name: Set Hadoop hdfs-datanode version
+  tags: package
+  set_fact:
+    hdfs_datanode_pkg: "{{ 'hadoop-hdfs-datanode-' + hdfs_datanode_version if hdfs_datanode_version else 'hadoop-hdfs-datanode' }}"
+    yarn_nodemanager_pkg: "{{ 'hadoop-yarn-nodemanager-' + yarn_nodemanager_version if yarn_nodemanager_version else 'hadoop-yarn-nodemanager' }}"
+
 - name: install packages
   tags: package
-  yum:  name={{ item }} state=latest
+  yum:  name={{ item }} state=present
   with_items:
-    - hadoop-hdfs-datanode
-    - hadoop-yarn-nodemanager
+    - "{{ hdfs_datanode_pkg }}"
+    - "{{ yarn_nodemanager_pkg }}"
 
 - name: destroy data
   tags: init
