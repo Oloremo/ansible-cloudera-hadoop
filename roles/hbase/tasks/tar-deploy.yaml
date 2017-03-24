@@ -1,0 +1,36 @@
+- name: download HBase
+  tags: packages
+  get_url: url="http://apache-mirror.rbc.ru/pub/apache/hbase/{{ hbase_tar_release }}/hbase-{{ hbase_tar_version }}-bin.tar.gz" dest=/tmp/hbase-{{ hbase_tar_version }}-bin.tar.gz
+  ignore_errors: true
+  register: hbase_download_result
+
+- name: try to get hbase from archive site if original one returns 404
+  tags: packages
+  get_url: url="http://archive.apache.org/dist/hbase/{{ hbase_tar_version }}/hbase-{{ hbase_tar_version }}-bin.tar.gz" dest=/tmp/hbase-{{ hbase_tar_version }}-bin.tar.gz
+  when: hbase_download_result.failed and hbase_download_result.status_code is defined and hbase_download_result.status_code == 404
+
+- name: unpack HBase
+  tags: packages
+  unarchive:
+    src: /tmp/hbase-{{ hbase_tar_version }}-bin.tar.gz
+    dest: /opt/
+    creates: /opt/hbase-{{ hbase_tar_version }}
+    remote_src: True
+
+- name: create symlink for hbase
+  tags: packages
+  file: 
+     src: /opt/hbase-{{ hbase_tar_version }}
+     dest: /usr/lib/hbase
+     state: link
+
+- name: create additional hbase directories
+  file: path={{ item }} state=directory owner={{ hbase_user }} group={{ hbase_user }}
+  with_items:
+    - /var/log/hbase
+    - /var/run/hbase
+
+- name: add hbase user
+  tags: packages
+  user: name={{ hbase_user }} shell=/usr/sbin/nologin state=present
+

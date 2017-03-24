@@ -4,8 +4,16 @@ java_package: java-1.8.0-openjdk-headless.x86_64
 java_home: /usr/lib/jvm/jre-1.8.0-openjdk
 
 # hbase variables
-hbase_release: hbase-1.0.3
-hbase_version: 1.0.3
+hbase_deploy_type: rpm
+
+hbase_main_rpm_url: https://github.com/Oloremo/hbase-packaging/releases/download/v1.0/hbase-1.0.3-3.el7.centos.noarch.rpm
+hbase_master_rpm_url: https://github.com/Oloremo/hbase-packaging/releases/download/v1.0/hbase-master-1.0.3-3.el7.centos.noarch.rpm
+hbase_rest_rpm_url: https://github.com/Oloremo/hbase-packaging/releases/download/v1.0/hbase-rest-1.0.3-3.el7.centos.noarch.rpm
+hbase_thrift_rpm_url: https://github.com/Oloremo/hbase-packaging/releases/download/v1.0/hbase-thrift-1.0.3-3.el7.centos.noarch.rpm
+hbase_regionserver_rpm_url: https://github.com/Oloremo/hbase-packaging/releases/download/v1.0/hbase-regionserver-1.0.3-3.el7.centos.noarch.rpm
+
+hbase_tar_release: hbase-1.0.3
+hbase_tar_version: 1.0.3
 hbase_user: hbase
 
 # cluster name will impact the name of alternatives links and hdfs URI in the case of HA

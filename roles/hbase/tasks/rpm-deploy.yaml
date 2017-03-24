@@ -1,0 +1,29 @@
+- name: install hbase main package
+  yum:
+    name: "{{ hbase_main_rpm_url }}"
+    state: present
+
+- name: install hbase master package
+  yum:
+    name: "{{ hbase_master_rpm_url }}"
+    state: present
+  when: deploy == "hbase-master"
+
+- name: install hbase rest package
+  yum:
+    name: "{{ hbase_rest_rpm_url }}"
+    state: present
+  when: deploy == "hbase-master"
+
+- name: install hbase thrift package
+  yum:
+    name: "{{ hbase_thrift_rpm_url }}"
+    state: present
+  when: deploy == "hbase-master"
+
+- name: install hbase regionserver package
+  yum:
+    name: "{{ hbase_regionserver_rpm_url }}"
+    state: present
+  when: deploy == "regionserver" and groups['hbasemaster']|count == 1
+
