@@ -1,0 +1,12 @@
+---
+- name: hdfs refresh nodes
+  command: hdfs dfsadmin -refreshNodes
+  become: true
+  become_user: hdfs
+  run_once: true
+
+- name: yarn refresh nodes
+  command: yarn rmadmin -refreshNodes
+  become: true
+  become_user: yarn
+  run_once: true

@@ -42,3 +42,7 @@
   with_items:
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager
+  notify:
+    - hdfs refresh nodes
+    - yarn refresh nodes
+

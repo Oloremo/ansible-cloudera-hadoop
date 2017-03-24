@@ -35,11 +35,17 @@
     - capacity-scheduler.xml
     - configuration.xsl
     - container-executor.cfg
-    - dfs.exclude
     - hadoop-metrics.properties
     - hadoop-metrics2.properties
     - hadoop-policy.xml
     - log4j.properties
+
+- name: install dfs.exclude file
+  tags: config
+  copy: src=dfs.exclude dest={{ etc_folder }}/hadoop/dfs.exclude
+  notify:
+    - hdfs refresh nodes
+    - yarn refresh nodes
 
 - name: install default configurations
   tags: config
