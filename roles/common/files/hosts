@@ -1,8 +1,6 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-10.7.94.103  hadoop1.node.flops.consul
-10.7.94.104  hadoop2.node.flops.consul
-10.7.94.105  hadoop3.node.flops.consul
-10.7.94.108  hadoop4.node.flops.consul
-
+10.10.10.11 test-01
+10.10.10.12 test-02
+10.10.10.13 test-03

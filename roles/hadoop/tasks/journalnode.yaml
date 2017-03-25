@@ -3,7 +3,7 @@
   set_fact:
     hdfs_journalnode_pkg: "{{ 'hadoop-hdfs-journalnode-' + hdfs_journalnode_version if hdfs_datanode_version else 'hadoop-hdfs-journalnode' }}"
 
-- name: install packages
+- name: install journalnode packages
   tags: package
   yum:  name={{ hdfs_journalnode_pkg }} state=present
 
@@ -22,6 +22,6 @@
   with_items:
     - hadoop-hdfs-journalnode
 
-- name: start services
+- name: start journalnode services
   tags: service
   service: name=hadoop-hdfs-journalnode state=restarted enabled=yes

@@ -1,33 +1,33 @@
 # at least one is required, 2 allowed
 # if 2, ha configured
 [namenodes]
-hadoop1.node.flops.consul
-hadoop2.node.flops.consul
+test-01
+test-02
 
 # at least one is required
 [datanodes]
-hadoop2.node.flops.consul
-hadoop3.node.flops.consul
+test-02
+test-03
 
 # at least one is required
 # job history server will be also configured on the 1st host
 [yarnresourcemanager]
-hadoop1.node.flops.consul
+test-01
 
 # optional
 # can be required for other services
 # 3 or 5 hosts is required if 2 namenodes configured
 [zookeepernodes]
-hadoop1.node.flops.consul
-hadoop2.node.flops.consul
-hadoop3.node.flops.consul
+test-01
+test-02
+test-03
 
 # optional
 # required if 2 namenodes configured
 [journalnodes]
-hadoop1.node.flops.consul
-hadoop2.node.flops.consul
-hadoop3.node.flops.consul
+test-01
+test-02
+test-03
 
 # optional
 # required if hivemetastore, oozie or hue configured
@@ -42,7 +42,7 @@ hadoop3.node.flops.consul
 
 # optional
 [hbasemaster]
-hadoop1.node.flops.consul
+test-01
 
 # optional
 [solr]

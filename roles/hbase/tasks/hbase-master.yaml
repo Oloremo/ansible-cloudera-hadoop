@@ -5,7 +5,7 @@
     - hbase-thrift
     - hbase-rest
     - hbase-master
-  when: ansible_os_family == 'RedHat' and deploy_type == 'tar'
+  when: ansible_os_family == 'RedHat' and hbase_deploy_type == 'tar'
 
 - name: create hdfs directories
   command: hdfs dfs {{ item }}

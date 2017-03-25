@@ -4,7 +4,7 @@
     hdfs_datanode_pkg: "{{ 'hadoop-hdfs-datanode-' + hdfs_datanode_version if hdfs_datanode_version else 'hadoop-hdfs-datanode' }}"
     yarn_nodemanager_pkg: "{{ 'hadoop-yarn-nodemanager-' + yarn_nodemanager_version if yarn_nodemanager_version else 'hadoop-yarn-nodemanager' }}"
 
-- name: install packages
+- name: install datanode packages
   tags: package
   yum:  name={{ item }} state=present
   with_items:
@@ -36,13 +36,11 @@
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager
 
-- name: start services
+- name: start datanode services
   tags: service
   service: name={{ item }} state=restarted enabled=yes
   with_items:
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager
-  notify:
+- notify:
     - hdfs refresh nodes
-    - yarn refresh nodes
-
