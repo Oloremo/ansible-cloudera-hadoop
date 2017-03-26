@@ -7,6 +7,41 @@
     - hbase-master
   when: ansible_os_family == 'RedHat' and hbase_deploy_type == 'tar'
 
+- name: adjust limits for hbase
+  tags: config
+  copy: src=hbase-limits.conf dest=/etc/security/limits.d/hbase.conf
+  notify:
+    - restart hbase master services
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hbase-site.xml
+    - regionservers
+  notify:
+    - restart hbase master services
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hadoop-metrics2-hbase.properties
+    - hbase-env.cmd
+    - hbase-env.sh
+    - hbase-policy.xml
+    - log4j.properties
+  notify:
+    - restart hbase master services
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hbase
+  notify:
+    - restart hbase master services
+
 - name: create hdfs directories
   command: hdfs dfs {{ item }}
   become: true
@@ -15,9 +50,11 @@
     - -mkdir -p /hbase
     - -chown hbase /hbase
 
+- meta: flush_handlers
+
 - name: start services
   tags: service
-  service: name={{ item }} state=restarted enabled=yes
+  service: name={{ item }} state=started enabled=yes
   with_items:
     - hbase-master
     - hbase-thrift

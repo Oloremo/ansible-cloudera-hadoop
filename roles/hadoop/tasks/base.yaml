@@ -40,13 +40,6 @@
     - hadoop-policy.xml
     - log4j.properties
 
-- name: install dfs.exclude file
-  tags: config
-  copy: src=dfs.exclude dest={{ etc_folder }}/hadoop/dfs.exclude
-  notify:
-    - hdfs refresh nodes
-    - yarn refresh nodes
-
 - name: install default configurations
   tags: config
   copy: src=default/{{ item }} dest=/etc/default/{{ item }}

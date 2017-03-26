@@ -10,6 +10,9 @@
   with_items:
     - "{{ hdfs_datanode_pkg }}"
     - "{{ yarn_nodemanager_pkg }}"
+  notify:
+    - restart datanode services
+    - hdfs refresh nodes
 
 - name: destroy data
   tags: init
@@ -35,12 +38,17 @@
   with_items:
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager
+  notify:
+    - restart datanode services
+    - hdfs refresh nodes
+
+- meta: flush_handlers
 
 - name: start datanode services
   tags: service
-  service: name={{ item }} state=restarted enabled=yes
+  service: name={{ item }} state=started enabled=yes
   with_items:
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager
-- notify:
+  notify:
     - hdfs refresh nodes

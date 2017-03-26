@@ -1,0 +1,14 @@
+---
+
+- name: restart hbase master services
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - hbase-master
+    - hbase-thrift
+    - hbase-rest
+
+- name: restart hbase regionserver service
+  tags: service
+  service: name=hbase-regionserver state=started enabled=yes
+

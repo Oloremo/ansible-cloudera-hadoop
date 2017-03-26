@@ -7,11 +7,15 @@
 - name: install resource manager package
   tags: package
   yum:  name={{ yarn_resourcemanager_pkg }} state=present
+  notify:
+    - restart resourcemanager service
 
 - name: install history server package
   tags: package
   yum:  name={{ mapreduce_historyserver_pkg }} state=present
   when: ansible_fqdn == groups['yarnresourcemanager'][0]
+  notify:
+    - restart historyserver service
 
 - name: install default configurations
   tags: config
@@ -19,7 +23,11 @@
   with_items:
     - hadoop-yarn-resourcemanager
     - hadoop-mapreduce-historyserver
+  notify:
+    - restart resourcemanager service
+    - restart historyserver service
 
+# Need to add check if this was already done before
 - name: configure hdfs directories
   tags: config
   command: hdfs dfs {{ item }}
@@ -36,18 +44,14 @@
     - -chown yarn:hadoop /var/log/hadoop-yarn/apps
     - -chmod 1777 /var/log/hadoop-yarn/apps
   run_once: true
+  notify:
+    - restart resourcemanager service
+    - restart historyserver service
 
-- name: start resourcemanager services
+- meta: flush_handlers
+
+- name: start resourcemanager service
   tags: service
-  service: name={{ item }} state=restarted enabled=yes
-  with_items:
-    - hadoop-yarn-resourcemanager
-- notify:
+  service: name=hadoop-yarn-resourcemanager state=started enabled=yes
+  notify:
     - yarn refresh nodes
-
-- name: start historyserver services
-  tags: service
-  service: name={{ item }} state=restarted enabled=yes
-  with_items:
-    - hadoop-mapreduce-historyserver
-  when: ansible_fqdn == groups['yarnresourcemanager'][0]

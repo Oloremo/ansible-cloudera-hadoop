@@ -1,0 +1,37 @@
+- name: Set Hadoop hdfs-zkfc version
+  tags: package
+  set_fact:
+    hdfs_zkfc_pkg: "{{ 'hadoop-hdfs-zkfc-' + hdfs_zkfc_version if hdfs_zkfc_version else 'hadoop-hdfs-zkfc' }}"
+
+- name: install zkfc package
+  tags: package
+  yum:  name={{ hdfs_zkfc_pkg }} state=present
+  when:  groups['namenodes']|count > 1
+  notify:
+    - restart zkfc service
+
+- name: install zkfc default configurations
+  tags: config
+  template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-hdfs-zkfc
+  when:  groups['namenodes']|count > 1
+  notify:
+    - restart zkfc service
+
+- name: initialize zookeeper
+  tags: init
+  command: hdfs zkfc -formatZK -force
+  become: true
+  become_user: hdfs
+  when:  groups['namenodes']|count > 1
+  run_once: true
+  notify:
+    - restart zkfc service
+
+- meta: flush_handlers
+
+- name: start zkfc service
+  tags: service
+  service: name=hadoop-hdfs-zkfc state=started enabled=yes
+  when:  groups['namenodes']|count > 1

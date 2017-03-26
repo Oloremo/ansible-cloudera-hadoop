@@ -6,6 +6,8 @@
 - name: install journalnode packages
   tags: package
   yum:  name={{ hdfs_journalnode_pkg }} state=present
+  notify:
+    - restart journalnode services
 
 - name: destroy data
   tags: init
@@ -21,7 +23,11 @@
   template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
   with_items:
     - hadoop-hdfs-journalnode
+  notify:
+    - restart journalnode services
 
-- name: start journalnode services
+- meta: flush_handlers
+
+- name: start journalnode service
   tags: service
-  service: name=hadoop-hdfs-journalnode state=restarted enabled=yes
+  service: name=hadoop-hdfs-journalnode state=started enabled=yes

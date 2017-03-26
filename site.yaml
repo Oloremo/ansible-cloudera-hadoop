@@ -50,6 +50,14 @@
     - { role: hadoop, deploy: 'namenodes' }
     - { role: hadoop, deploy: 'namenodes-fence' }
 
+- name: Deploy excludes configuration
+  tags:
+    - config
+    - hadoop
+  hosts: hadoop
+  roles:
+    - { role: hadoop, deploy: 'excludes' }
+
 - name: Deploy datanodes
   tags: datanodes
   hosts: datanodes

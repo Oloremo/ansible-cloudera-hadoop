@@ -7,8 +7,20 @@
 - include: namenodes-fence.yaml
   when: deploy == "namenodes-fence" and groups['namenodes']|count > 1
 
+- include: zkfc.yaml
+  when: deploy == "namenodes"
+
 - include: namenode.yaml
   when: deploy == "namenodes"
+
+- include: namenode-master.yaml
+  when: deploy == "namenodes"
+
+- include: namenode-backup.yaml
+  when: deploy == "namenodes"
+
+- include: exclude.yaml
+  when: deploy == "excludes"
 
 - include: datanode.yaml
   when: deploy == "datanodes"

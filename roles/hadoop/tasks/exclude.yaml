@@ -1,0 +1,7 @@
+---
+- name: install dfs.exclude file
+  tags: config
+  copy: src=dfs.exclude dest={{ etc_folder }}/hadoop/dfs.exclude
+  notify:
+    - hdfs refresh nodes
+

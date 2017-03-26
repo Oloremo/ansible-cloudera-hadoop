@@ -1,4 +1,46 @@
 ---
+- name: restart hdfs-datanode services
+  tags: service
+  service: name=hadoop-hdfs-datanode state=restarted enabled=yes
+  listen: restart datanode services
+
+- name: restart yarn-nodemanager services
+  tags: service
+  service: name=hadoop-yarn-nodemanager state=restarted enabled=yes
+  listen: restart datanode services
+
+- name: restart journalnode services
+  tags: service
+  service: name=hadoop-hdfs-journalnode state=restarted enabled=yes
+
+- name: restart zkfc service
+  tags: service
+  service: name=hadoop-hdfs-zkfc state=restarted enabled=yes
+  when:  groups['namenodes']|count > 1
+
+- name: restart primary namenode
+  tags: service
+  service: name=hadoop-hdfs-namenode state=restarted enabled=yes
+  when: ansible_fqdn == groups['namenodes'][0]
+
+- name: restart secondary namenode
+  tags: service
+  service: name=hadoop-hdfs-namenode state=restarted enabled=yes
+  when: ansible_fqdn != groups['namenodes'][0]
+
+- name: restart resourcemanager service
+  tags: service
+  service: name=hadoop-yarn-resourcemanager state=restarted enabled=yes
+  notify:
+    - yarn refresh nodes
+
+- name: restart historyserver service
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - hadoop-mapreduce-historyserver
+  when: ansible_fqdn == groups['yarnresourcemanager'][0]
+
 - name: hdfs refresh nodes
   command: hdfs dfsadmin -refreshNodes
   become: true
@@ -10,3 +52,4 @@
   become: true
   become_user: yarn
   run_once: true
+

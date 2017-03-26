@@ -1,0 +1,15 @@
+- name: format primary namenode
+  tags: init
+  command: hdfs namenode -format -force
+  become: true
+  become_user: hdfs
+  when: ansible_fqdn == groups['namenodes'][0] and destroy_data
+  notify:
+    - restart primary namenode
+
+- meta: flush_handlers
+
+- name: start primary namenode
+  tags: service
+  service: name=hadoop-hdfs-namenode state=started enabled=yes
+  when: ansible_fqdn == groups['namenodes'][0]

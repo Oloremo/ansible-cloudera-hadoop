@@ -14,10 +14,6 @@
   file: path=/usr/lib/hbase/conf state=absent
   when: hbase_config_dir.stat.isdir is defined and hbase_config_dir.stat.isdir
 
-- name: adjust limits for hbase
-  tags: config
-  copy: src=hbase-limits.conf dest=/etc/security/limits.d/hbase.conf
-
 - name: add hbase executable
   tags: config
   copy: src=hbase-bin.conf dest=/usr/bin/hbase mode=0755
@@ -34,29 +30,6 @@
      src: /etc/alternatives/hbase-conf
      dest: /usr/lib/hbase/conf
      state: link
-
-- name: install template configurations
-  tags: config
-  template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }}
-  with_items:
-    - hbase-site.xml
-    - regionservers
-
-- name: install files configurations
-  tags: config
-  copy: src={{ item }} dest=/etc/hbase/conf/{{ item }}
-  with_items:
-    - hadoop-metrics2-hbase.properties
-    - hbase-env.cmd
-    - hbase-env.sh
-    - hbase-policy.xml
-    - log4j.properties
-
-- name: install default configurations
-  tags: config
-  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
-  with_items:
-    - hbase
 
 - include: hbase-master.yaml
   when: deploy == "hbase-master"
